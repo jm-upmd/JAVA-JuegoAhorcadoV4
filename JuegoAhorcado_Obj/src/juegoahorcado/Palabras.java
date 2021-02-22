@@ -10,14 +10,20 @@ import java.util.Scanner;
 public class Palabras {
 	
 	private ArrayList<String> palabras;
+	
+	// Longitud mínima y máxima de las palabras cargadas en el array;
+	private  int palMaxLong  = 0;
+	private  int palMinLong = Integer.MAX_VALUE;
 
 	public Palabras() {
+		
 		cargaPalabras(true,"/palabras.txt");
+
 	}
 
 	public Palabras(String fichero) {
 		cargaPalabras(false, fichero);
-		
+
 	}
 
 	/**
@@ -25,6 +31,7 @@ public class Palabras {
 	 * @param esRecurso true si el fichero es de recurso; false si no lo es
 	 * @param nombre Ruta completa del fichero si es del file system; nombre fichero 
 	 * recurso con: ejemplo: "/palabras.txt"
+	 * @param max_min 
 	 */
 	void cargaPalabras(boolean esRecurso, String nombre) {
 		Scanner sc = null;
@@ -49,11 +56,15 @@ public class Palabras {
 		
 		palabras = new ArrayList<>(); // Crea el arrayList para almacenar las parlabras
 
-		while (sc.hasNextLine()) // Mientras haya líneas que leer.
-			palabras.add(sc.nextLine()); // Cada palabra está en una línea del fichero
+		while (sc.hasNextLine()) { // Mientras haya líneas que leer.
+			String pal = sc.nextLine();
+			int l;
+			palabras.add(pal); // Cada palabra está en una línea del fichero
+			palMinLong = (l = pal.length()) < palMinLong ? l : palMinLong;
+			palMaxLong = (l = pal.length()) > palMaxLong ? l : palMaxLong;
+		}
 
-		sc.close();  // Cierra el Scanner y este el descriptor de fichero asociado.
-	
+		sc.close();  // Cierra el Scanner y este el descriptor de fichero asociado.	
 	}
 
 
@@ -96,6 +107,9 @@ public class Palabras {
 	 *         con dicha longitud en la lista
 	 */
 	public String damePalabraL(int longitud) {
+		if(longitud > palMaxLong || longitud < palMinLong)
+			throw new IllegalArgumentException("Logitud fuera de rango: " + palMinLong + "-" + palMaxLong);
+		
 		String palabra = null;
 		int s = palabras.size();
 
@@ -125,6 +139,14 @@ public class Palabras {
 		
 		return null;	
 		
+	}
+	
+	public int getPalMaxLong() {
+		return palMaxLong;
+	}
+
+	public int getPalMinLong() {
+		return palMinLong;
 	}
 
 }
